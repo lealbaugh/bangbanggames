@@ -8,6 +8,21 @@
         color: blue;
     }
     </style>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect()
+
+        socket.on('message', function(data) {
+            console.log(arguments);
+            console.log("got message: "+data);
+            var p = document.createElement('p');
+            p.innerHTML = data;
+            document.querySelector('body').appendChild(p);
+            // socket.emit("message", "Hello");
+        });
+
+        socket.emit("message", "Hello");
+    </script>
 </head>
 <body>
 
