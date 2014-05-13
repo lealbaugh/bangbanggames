@@ -13,8 +13,9 @@ app.debug = False
 socketio = SocketIO(app)
 
 from pymongo import *
-import envvariables
+
 # MongoHQ account info, temporarily from envvariables.py
+# import envvariables
 # mongoclientURL = envvariables.MONGOHQ_URL
 mongoclientURL = os.environ['MONGOHQ_URL']
 databasename = mongoclientURL.split("/")[-1] #gets the last bit of the URL, which is the database name
