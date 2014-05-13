@@ -15,9 +15,9 @@ socketio = SocketIO(app)
 from pymongo import *
 
 # MongoHQ account info, temporarily from envvariables.py
-# import envvariables
-# mongoclientURL = envvariables.MONGOHQ_URL
-mongoclientURL = os.environ['MONGOHQ_URL']
+import envvariables
+mongoclientURL = envvariables.MONGOHQ_URL
+# mongoclientURL = os.environ['MONGOHQ_URL']
 databasename = mongoclientURL.split("/")[-1] #gets the last bit of the URL, which is the database name
 mongoclient = MongoClient(mongoclientURL)
 database = mongoclient[databasename]	#loads the assigned database
@@ -85,7 +85,7 @@ def send_message(message):
 				placename = geocode["placename"]
 				latitude = geocode["latitude"]
 				longitude = geocode["longitude"]
-				socketio.emit("geocode", {"placename":placename, "latitude":latitude, "longitude": longitude})
+				emit("geocode", {"placename":placename, "latitude":latitude, "longitude": longitude})
 	return
 
 # put received placename/location in DB
@@ -93,6 +93,9 @@ def send_message(message):
 def testingSocket(data):
 	print "HELLO"
 	
+@socketio.on('connect')
+def connectionMessage():
+	emit("message", "hello")
 
 #----------Jinja filter-------------------------------------------
 @app.template_filter('printtime')
