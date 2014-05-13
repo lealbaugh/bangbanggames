@@ -4,17 +4,19 @@ import datetime
 import random
 import re
 import string
+import os
 
 from flask import *
 from flask.ext.socketio import SocketIO, emit
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 socketio = SocketIO(app)
 
 from pymongo import *
 import envvariables
 # MongoHQ account info, temporarily from envvariables.py
-mongoclientURL = envvariables.MONGOHQ_URL
+# mongoclientURL = envvariables.MONGOHQ_URL
+mongoclientURL = os.environ['MONGOHQ_URL']
 databasename = mongoclientURL.split("/")[-1] #gets the last bit of the URL, which is the database name
 mongoclient = MongoClient(mongoclientURL)
 database = mongoclient[databasename]	#loads the assigned database
