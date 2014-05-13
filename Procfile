@@ -1,1 +1,1 @@
-web: gunicorn --worker-class socketio.sgunicorn.GeventSocketIOWorker bangbang:app
+web: gunicorn -k socketio.sgunicorn.GeventSocketIOWorker bangbang:app

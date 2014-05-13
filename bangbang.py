@@ -89,11 +89,9 @@ def send_message(message):
 	return
 
 # put received placename/location in DB
-@socketio.on('newgeocode')
-def cacheGeocode(data):
-	print data
-	geocodes.insert(data)
-	return True
+@socketio.on('test')
+def testingSocket(data):
+	print "HELLO"
 	
 
 #----------Jinja filter-------------------------------------------
