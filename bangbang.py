@@ -91,6 +91,7 @@ def send_message(message):
 # put received placename/location in DB
 @socketio.on('test')
 def testingSocket(data):
+	emit("message", "RESPONDING")
 	print "HELLO"
 	
 @socketio.on('connect')
