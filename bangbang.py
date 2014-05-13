@@ -20,10 +20,38 @@ mongoclient = MongoClient(mongoclientURL)
 database = mongoclient[databasename]	#loads the assigned database
 geocodes = database["geocodes"]	#loads or makes the collection, whichever should happen
 
+import urllib2
+import json
+
+def formatAddressForGeocoding(rawaddress):
+	return "+".join(rawaddress.strip().split())
+
+def requestGeocode(rawaddress):
+	address = formatAddressForGeocoding(rawaddress)
+	url="http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % address
+	response = urllib2.urlopen(url)
+	jsongeocode = response.read()
+	geocode = json.loads(jsongeocode)
+
+	if geocode["status"] == "OK":
+		location = geocode["results"][0]["geometry"]["location"]
+		latitude = location["lat"]
+		longitude = location["lng"]
+		data = {"placename":rawaddress, "status":"OK", "latitude":latitude, "longitude":longitude}
+		socketio.emit("geocode", data)
+		geocodes.insert(data)
+
+	else:
+		status = geocode["status"]
+		data = {"placename":rawaddress, "error":status}
+		geocodes.insert(data)
+
 
 # ----------Logic---------------
 def gameLogic(content):
-	socketio.emit('location', content)
+	requestGeocode(content)
+	pass
+	# socketio.emit('location', content)
 
 
 # ----------- Web --------------
@@ -50,10 +78,11 @@ def mapview():
 def send_message(message):
 	if message == "hello":
 		for geocode in geocodes.find():
-			placename = geocode["placename"]
-			longitude = geocode["location"]["A"]
-			latitude = geocode["location"]["k"]
-			socketio.emit("cachedgeocode", {"placename":placename, "latitude":latitude, "longitude": longitude})
+			if geocode["status"]=="OK":
+				placename = geocode["placename"]
+				latitude = geocode["latitude"]
+				longitude = geocode["longitude"]
+				socketio.emit("geocode", {"placename":placename, "latitude":latitude, "longitude": longitude})
 	return
 
 # put received placename/location in DB

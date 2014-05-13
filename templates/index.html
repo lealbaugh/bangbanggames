@@ -26,18 +26,20 @@
             console.log("got message: "+message);
         });
 
-        socket.on('location', function(data) {
-            console.log(data);
-            codePlace(data);
-        });
-
-        socket.on('cachedgeocode', function(data){
+        socket.on('geocode', function(data){
             var placename = data.placename;
-            console.log("Cached place: ");
-            console.log(placename);
+            console.log("Place: "+placename);
             var location = new google.maps.LatLng(data.latitude, data.longitude);
             dropMarker(location);
         });
+
+        function dropMarker(location) {
+            console.log(location);
+            var marker = new google.maps.Marker({
+              map: map,
+              position: location
+            });
+        }
 
         function initialize() {
             geocoder = new google.maps.Geocoder();
@@ -48,27 +50,6 @@
             map = new google.maps.Map(document.getElementById("map-canvas"),
                 mapOptions);
           };
-
-        function codePlace(place) {
-          geocoder.geocode( { 'address': place}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                var location = results[0].geometry.location;
-                console.log(location);
-                socket.emit("newgeocode", {"placename":place, "location":location});
-                // map.setCenter(results[0].geometry.location);
-                dropMarker(location)
-            } else {
-              alert("Geocode was not successful for the following reason: " + status);
-            }
-          });
-        };
-
-        function dropMarker(location) {
-            var marker = new google.maps.Marker({
-              map: map,
-              position: location
-            });
-        }
 
         google.maps.event.addDomListener(window, 'load', initialize);
         socket.emit("message", "hello");
