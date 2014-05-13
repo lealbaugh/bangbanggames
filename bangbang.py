@@ -15,9 +15,9 @@ socketio = SocketIO(app)
 from pymongo import *
 
 # MongoHQ account info, temporarily from envvariables.py
-import envvariables
-mongoclientURL = envvariables.MONGOHQ_URL
-# mongoclientURL = os.environ['MONGOHQ_URL']
+# import envvariables
+# mongoclientURL = envvariables.MONGOHQ_URL
+mongoclientURL = os.environ['MONGOHQ_URL']
 databasename = mongoclientURL.split("/")[-1] #gets the last bit of the URL, which is the database name
 mongoclient = MongoClient(mongoclientURL)
 database = mongoclient[databasename]	#loads the assigned database
