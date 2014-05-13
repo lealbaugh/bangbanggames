@@ -1,1 +1,1 @@
-web: gunicorn bangbang:app
+web: gunicorn gevent-socketio bangbang:app
